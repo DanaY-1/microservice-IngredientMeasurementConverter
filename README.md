@@ -22,7 +22,7 @@ conn.send(message.encode())
 ```
 
 ### How to Receive Data from the Microservice:
-The microservice will receive the request and send back an encoded message which contains the converted value as a string. The Ingredients in Season application should receive the message over the socket connection and decode it to access the value. An example receive call by the Ingredients in Season application is provided below:
+The microservice will receive the request and send back an encoded message which contains the converted value as a string. For the example in the above request, the encoded message sent back will be "3.0" which is the converted value from 1 tablespoon to teaspoon units. The Ingredients in Season application should receive the message over the socket connection and decode it to access the value. An example receive call by the Ingredients in Season application is provided below:
 ```
 message = conn.recv(1024)
 message = message.decode()
