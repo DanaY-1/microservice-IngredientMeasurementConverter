@@ -40,11 +40,13 @@ A simulated Ingredients application is provided in this repository to test socke
 
 Requests from the Ingredients app are sent as a stringified dictionary.
 The dictionary request should be in the format below:
+```
 request = {
     "amount": 1,
     "from_units": "tbsp",
     "to_units": "tsp"
 }
+```
 Example requests are provided in the simulated app for testing purposes.
 
 How to Run:
