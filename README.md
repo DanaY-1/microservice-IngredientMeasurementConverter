@@ -4,6 +4,9 @@
 The microservice_MeasurementConverter.py program is a microservice that converts between requested measurement units and provides the converted value.
 This microservice is intended to communicate with an Ingredients in Season application via a socket connection.
 
+### Communication Pipeline:
+Socket
+
 ### How to Run:
 Required data library imports are (python): import socket, import json, import time, import sys
 
@@ -11,21 +14,46 @@ Prior to launching, ensure that the Ingredients in Season application and the mi
 
 The Ingredients in Season application should be launched first. The Ingredients in Season application should set up a socket connection and listen for the microservice. The microservice should be launched after the Ingredients in Season application has established a socket connection. After the microservice is launched, it will connect to the socket provided by the Ingredients in Season application and is ready to receive requests immediately.
 
+#### Start Sequence
+1. Launch Ingredient in Season application - sets up socket
+2. Launch Microservice - connects to socket on start up
+3. Microservice is ready to receive requests immediately
+
 ### How to Make a Request to the Microservice:
-Once the Ingredients in Season application and microservice are connected to the socket, the Ingredients in Season application may send requests to the microservice to convert a given value between specified units of measurement. The Ingredients in Season application may request a specific unit conversion by sending an encoded message over the socket which contains a stringified dictionary. The dictionary must be structured such that there are three keys: "amount", "from_units", and "to_units". The "amount" value should be the value which is to be converted. The "from_units" value should be the units to be converted from, and, similarly, the "to_units" value should be the resulting units being requested. An example request call is provided below including an example dictionary definition (python):
+Once the Ingredients in Season application and microservice are connected to the socket, the Ingredients in Season application may send requests to the microservice to convert a given value between specified units of measurement. The Ingredients in Season application may request a specific unit conversion by sending an encoded message over the socket which contains a stringified dictionary. The dictionary must be structured such that there are three keys: "amount", "from_units", and "to_units". The "amount" value should be the value which is to be converted. The "from_units" value should be the units to be converted from, and, similarly, the "to_units" value should be the resulting units being requested. 
+
+Pseudocode request call from app:
 ```
-example_request = {
+req = {
+    "amount": value,
+    "from_units": "unit code",
+    "to_units": "unit code"
+}
+request_message = serialize(req)
+reqMeasConvert(request_message)
+```
+
+An example request call is provided below including an example dictionary definition (python):
+```
+req = {
     "amount": 1,
     "from_units": "tbsp",
     "to_units": "tsp"
 }
-message = json.dumps(example_request)   # serialized dict
+message = json.dumps(req)   # serialized dict
 conn.send(message.encode())
 ```
 The format for the "from_units" and "to_units" text codes are provided in the text file Units.txt. For example, to convert from Tablespoons the "from_units" should have a value "tbsp".
 
 ### How to Receive Data from the Microservice:
-The microservice will receive the request and send back an encoded message which contains the converted value as a string. For the example in the above request, the encoded message sent back will be "3.0" which is the converted value from 1 tablespoon to teaspoon units. The Ingredients in Season application should receive the message over the socket connection and decode it to access the value. An example receive call by the Ingredients in Season application is provided below (python):
+The microservice will receive the request and send back an encoded message which contains the converted value as a string. For the example in the above request, the encoded message sent back will be "3.0" which is the converted value from 1 tablespoon to teaspoon units. The Ingredients in Season application should receive the message over the socket connection and decode it to access the value. 
+
+Microservice responds with single value as a string:
+```
+message = "3.0"
+```
+
+An example receive call by the Ingredients in Season application is provided below (python):
 ```
 message = conn.recv(1024)
 message = message.decode()
